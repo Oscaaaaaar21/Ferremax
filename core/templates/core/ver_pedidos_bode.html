@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<br><br><br><br>
+    
+<div class="all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3>Pedidos</h3>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="wishlist-box-main">
+    <div class="container">
+        <div class="row">    
+            <div class="col-lg-12">
+                <div class="table-main table-responsive">
+                    <form method="post" id="formPedido">
+                        {% csrf_token %}
+                        <table class="table" id="tablaUsuarios">
+                            <thead>
+                                <tr>
+                                    <th>Id Pedido</th>
+                                    <th>Usuario</th>
+                                    <th>Ver detalle</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in LineaPedido %}
+                                <tr id="pedido_{{ pedido.id }}">
+                                    <td>{{ pedido.id }}</td>
+                                    <td>{{ pedido.user.username }}</td>
+                                   
+                                    <td>
+                                        <a href="{% url 'detallepedido' pedido.id %}" btn="primary">Ver Detalle</a>
+                                    </td>
+                                    <td>
+                                        <!-- Botón para tomar el pedido -->
+                                        <form method="post" action="{% url 'ver_pedidos_bode' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="tomar_pedido" value="{{ pedido.id }}">
+                                            <button type="submit" class="btn btn-primary">Tomar Pedido</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-sm-12 col-xs-12 sidebar-shop-left">
+                    <div class="product-categori">
+                        <div class="filter-sidebar-left">
+                            <div class="list-group list-group-collapse list-group-sm list-group-tree" id="list-group-men" data-children=".sub-men">
+                                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmarTomarPedido(pedidoId) {
+        Swal.fire({
+            title: '¿Estás seguro de tomar el pedido?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si el usuario confirma, enviar el formulario con el pedidoId
+                document.querySelector('input[name="tomar_pedido"]').value = pedidoId;
+                document.querySelector('#formPedido').submit();
+            }
+        });
+    }
+</script>
+
+{% endblock %}

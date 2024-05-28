@@ -1,0 +1,152 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block contenido %}
+<br><br><br><br><br>
+<div class="wishlist-box-main">
+    <div class="container">
+        <div class="row">    
+            <div class="col-lg-12">
+                <div class="table-main table-responsive">
+                    <form method="post" id="formPedido">
+                        {% csrf_token %}
+                        <table class="table" id="tablaUsuarios">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>  
+                                </tr>
+                            </thead>
+                            {% for aux in lineapedido %}
+                                <tbody>
+                                    <tr>
+                                        <td>{{aux.producto}}</td>
+                                        <td>{{aux.cantidad}}</td>
+                                    </tr>
+                                </tbody>
+                            {% endfor %}
+                        </table>
+                        <div class="form-group">
+                            <label for="tipoEnvio">Tipo de Envío:</label>
+                            <select class="form-control" id="tipoEnvio" name="tipoEnvio">
+                                <option value="despacho">Despacho</option>
+                                <option value="retiro_tienda">Retiro en Tienda</option>
+                            </select>
+                        </div>
+                        <p id="countdown"></p>
+                        <p style="font-size: 14px; color: rgb(78, 73, 73);">Tienes aproximadamente 1 hora para cambiar la opción de envío. Una vez transcurrido este tiempo, el pedido se procesará como 'Retiro en Tienda' automáticamente.</p>
+
+                        <button type="submit" class="btn btn-primary">Procesar Pedido</button>
+                    </form>    
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h1> </h1>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    
+</div>
+
+<br><br><br>
+
+<script>
+    // Función para mostrar el cronómetro
+    function startCountdown(duration, display) {
+        var timer = duration, minutes, seconds;
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                timer = duration;
+                // Si se agota el tiempo, seleccionar automáticamente "Retiro en Tienda"
+                document.getElementById("tipoEnvio").value = "retiro_tienda";
+            }
+        }, 1000);
+    }
+
+    // Iniciar el cronómetro cuando se cargue la página
+    window.onload = function () {
+        var oneHour = 60 * 60,
+            display = document.querySelector('#countdown');
+        startCountdown(oneHour, display);
+    };
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Función para mostrar el formulario de dirección
+        function mostrarFormularioDireccion() {
+            Swal.fire({
+                title: 'Ingrese su dirección de despacho',
+                html: `
+                    <input id="calle" class="swal2-input" placeholder="Calle">
+                    <input id="numero_casa" class="swal2-input" placeholder="Número de Casa">
+                    <input id="comuna" class="swal2-input" placeholder="Comuna">
+                    <input id="ciudad" class="swal2-input" placeholder="Ciudad">
+                    <input id="codigo_postal" class="swal2-input" placeholder="Código Postal">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    const calle = Swal.getPopup().querySelector('#calle').value;
+                    const numero_casa = Swal.getPopup().querySelector('#numero_casa').value;
+                    const comuna = Swal.getPopup().querySelector('#comuna').value;
+                    const ciudad = Swal.getPopup().querySelector('#ciudad').value;
+                    const codigo_postal = Swal.getPopup().querySelector('#codigo_postal').value;
+
+                    // Aquí podrías enviar los datos de la dirección al backend para procesarlos
+                    // Por simplicidad, solo mostramos una alerta con los datos ingresados
+                    Swal.fire({
+                        title: 'Dirección de Despacho',
+                        html: `
+                            Calle: ${calle}<br>
+                            Número de Casa: ${numero_casa}<br>
+                            Comuna: ${comuna}<br>
+                            Ciudad: ${ciudad}<br>
+                            Código Postal: ${codigo_postal}
+                        `,
+                        icon: 'success'
+                    });
+                }
+            });
+        }
+
+        // Evento para mostrar el formulario cuando se selecciona la opción de despacho
+        document.getElementById("tipoEnvio").addEventListener("change", function() {
+            if (this.value === "despacho") {
+                mostrarFormularioDireccion();
+            }
+        });
+
+        // Capturar el evento de envío del formulario
+        document.getElementById("formPedido").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevenir el envío del formulario por defecto
+
+            // Obtener el valor seleccionado en el tipo de envío
+            var tipoEnvio = document.getElementById("tipoEnvio").value;
+
+            // Aquí podrías enviar los datos del formulario al backend para procesarlos
+            // Por simplicidad, mostraremos una alerta con el tipo de envío seleccionado
+            Swal.fire({
+                title: 'Procesar Pedido',
+                text: 'Tipo de envío seleccionado: ' + tipoEnvio,
+                icon: 'success'
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

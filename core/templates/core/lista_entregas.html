@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block contenido %}
+<br><br><br><br><br><br>
+<div class="container">
+    <h1 class="mt-5">Entregas de Pedidos</h1>
+    <br><br><br><br><br>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Pedido</th>
+                <th>Fecha de Entrega</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entrega in entregas %}
+            <tr>
+                <td>{{ entrega.usuario }}</td>
+                <td>{{ entrega.pedido }}</td>
+                <td>{{ entrega.fecha_entrega }}</td>
+                <td>{{ entrega.observaciones }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

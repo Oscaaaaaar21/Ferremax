@@ -1,0 +1,14 @@
+django 
+pillow
+django-admin-interface
+django-crispy-forms
+django-paypal
+paypal-checkout-serversdk
+pymysql
+mysqlclient
+django-jazzmin
+django-rest-framework
+crispy-bootstrap5
+django-shopping-cart
+requests
+django-mathfilters

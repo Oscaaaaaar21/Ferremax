@@ -1,0 +1,79 @@
+{% extends 'core/base.html' %}
+{% block contenido %}
+
+<br><br><br><br><br><br><br><br><br><br>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title">Lista de Usuarios</h5>
+        </div>
+        <a href="{% url 'listar_user'%}" btn="primary">Lista de usuarios</a>
+
+        <div class="card-body">
+          <ul>
+            {% for usuario in usuarios %}
+              <li>{{ usuario.username }} ({{ usuario.email }}) - 
+                {% for grupo in usuario.groups.all %}
+                  {{ grupo }}
+                  {% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                <button class="btn btn-sm btn-primary" onclick="window.location.href='{% url 'modificar_user' usuario.id %}'">Modificar</button>
+                <button class="btn btn-sm btn-danger" onclick="if(confirm('¿Estás seguro de eliminar este usuario?')) { window.location.href='{% url 'eliminar_usuario' usuario.id %}' }">Eliminar</button>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title">Crear Nuevo Usuario</h5>
+        </div>
+        <div class="card-body">
+          <form method="post" action="{% url 'crear_usuario' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="username">Nombre de Usuario:</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="first_name">Nombre:</label>
+              <input type="text" class="form-control" id="first_name" name="first_name">
+            </div>
+            <div class="form-group">
+              <label for="last_name">Apellido:</label>
+              <input type="text" class="form-control" id="last_name" name="last_name">
+            </div>
+            <div class="form-group">
+              <label for="email">Correo Electrónico:</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="password1">Contraseña:</label>
+              <input type="password" class="form-control" id="password1" name="password1" required>
+            </div>
+            <div class="form-group">
+              <label for="password2">Confirmar Contraseña:</label>
+              <input type="password" class="form-control" id="password2" name="password2" required>
+            </div>
+            <div class="form-group">
+              <label for="grupo">Grupo de Usuario:</label>
+              <select class="form-control" id="grupo" name="grupo">
+                <option value="vendedor">Vendedor</option>
+                <option value="usuario">Usuario</option>
+                <option value="usuario">bodeguero</option>
+
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear Usuario</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br><br><br><br><br>
+{% endblock %}
